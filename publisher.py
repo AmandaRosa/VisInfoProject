@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import time
-import random
+import json
+import numpy as np
 
 class Publisher:
 
@@ -22,10 +23,11 @@ class Publisher:
         self.client.connect(self.broker_address)
 
 
-    def publish(self):
-        # Select a random number and a random topic
-        message = str(random.choice(self.numbers))
-        topic = random.choice(self.topics)
-        self.client.publish(topic, message)
-        print(f"Published '{message}' to topic '{topic}'")
-        time.sleep(5)  # Wait for 5 seconds before publishing again
+    def publish(self, topic, message):
+
+        # msg = message.tolist()
+        mqtt_msg = json.dumps(message)
+        
+        self.client.publish(topic, mqtt_msg)
+        print(f"Published '{mqtt_msg}' to topic '{topic}'")
+        time.sleep(1) 

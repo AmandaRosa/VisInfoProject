@@ -1,9 +1,12 @@
 from publisher import *
-from subscriber import *
 from features import *
 
 
 sessao = Features()
+publisher = Publisher()
 
-for i in range(0,5):
-    sessao.disparar()
+while True:
+    chave, valor = sessao.disparar()
+    topic = "test/topic1"
+    message = {f'{chave}': valor.tolist()}
+    publisher.publish(topic, message)

@@ -12,13 +12,11 @@ class Subscriber:
 
     # Define the callback function for when a message is received
     def on_message(self, client, userdata, message):
-        global total_sum
-        # Decode the incoming message and convert to an integer
-        number = int(message.payload.decode())
-        # Add the number to the total sum
-        total_sum += number
-        print(f"Received number '{number}' on topic '{message.topic}'")
-        print(f"Current total sum: {total_sum}")
+
+
+        mqtt_msg = message.payload.decode()
+
+        print(f"Received number '{mqtt_msg}' on topic '{message.topic}'")
 
     def subscribe(self):
 

@@ -288,6 +288,5 @@ class Features:
             'Unbalanced_30g_Ver_Mis_127mm': self.features_fault6
         }
 
-        for _ in range(5):
-            chave, valor = self.escolher_chave(dict_disparo)
-            print(f"DISPARO!!! Chave: {chave}, Valor: {valor.shape}")
+        chave, valor = self.escolher_chave(dict_disparo)
+        return chave,valor
