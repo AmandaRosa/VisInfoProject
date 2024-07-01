@@ -1,8 +1,11 @@
+import json
 import paho.mqtt.client as mqtt
 
 class Subscriber:
 
     def __init__(self):
+
+        self.data = []
 
         # Define the broker address
         self.broker_address = "localhost"  # Replace with the actual broker address
@@ -16,7 +19,17 @@ class Subscriber:
 
         mqtt_msg = message.payload.decode()
 
-        print(f"Received number '{mqtt_msg}' on topic '{message.topic}'")
+        true_label = list(json.loads(mqtt_msg).keys())[0]
+
+        print(f"Received number '{true_label}' on topic '{message.topic}'")
+
+        self.data.append(true_label)
+
+        ## chamar função que transforma para Dataframe cujas linhas são tempo e colunas são os labels e os valores são 0s e 1s 
+
+        ## chamar aqui o modelo de predicao e resultados comparados aos gabaritos
+
+        return mqtt_msg
 
     def subscribe(self):
 
@@ -35,3 +48,5 @@ class Subscriber:
 
         # Start the MQTT client loop
         self.client.loop_forever()
+
+        return self.client.on_message
