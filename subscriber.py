@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 from timedomain import *
 import pickle
 import sklearn
-from streamlit_page import *
+import streamlit as st
 
 class Subscriber:
 
@@ -25,6 +25,20 @@ class Subscriber:
         # Define the topics
         self.topics = ["test/topic1", "test/topic2", "test/topic3"]
 
+    def calculate_accuracy(self, true_labels, predictions):
+        # print(true_labels)
+        # correct = 0
+        # for idx, item in enumerate(true_labels):
+        #     result_bool = (true_labels[idx] == predictions[idx])
+        #     if result_bool == True:
+        #         correct +=1
+        #     accuracy = correct / len(true_labels) *100
+        correct = np.sum(true_labels == predictions)
+        print(correct)
+        accuracy = correct / len(true_labels) *100 
+
+        return accuracy
+
     # Define the callback function for when a message is received
     def on_message(self, client, userdata, message):
 
@@ -35,13 +49,15 @@ class Subscriber:
 
         true_label = list(data_dict.keys())[0]
 
-        data_array = np.array(data_dict[true_label])   
+        data_array = np.array(data_dict[true_label])
 
-        self.predict(true_label, data_array)
+        dict_data = self.predict(true_label, data_array)
 
+        ## chamar os gráficos e plots que irão printar no streamlit
+    
         return mqtt_msg
 
-    def subscribe(self):
+    def subscriber(self):
 
         # Create a new MQTT client instance
         self.client = mqtt.Client(client_id="Subscriber")
@@ -102,7 +118,10 @@ class Subscriber:
             y_pred = model.predict(message)
             self.data[classifiers[idx]].append(legend[str(int(y_pred[-1]))])
 
-        self.app.streamlit_page(self.data)
+        print(self.data)
+
+        return self.data
+
 
 
 
