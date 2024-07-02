@@ -19,8 +19,6 @@ class Subscriber:
             'NAIVEBAYES' : []
         }
 
-        self.app = StreamlitApp()
-
         # Define the broker address
         self.broker_address = "localhost"  # Replace with the actual broker address
 
@@ -102,7 +100,6 @@ class Subscriber:
 
         for idx, model in enumerate(models):
             y_pred = model.predict(message)
-            # print(model, int(y_pred[-1]))
             self.data[classifiers[idx]].append(legend[str(int(y_pred[-1]))])
 
         self.app.streamlit_page(self.data)
