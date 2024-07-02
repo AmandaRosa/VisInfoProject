@@ -136,30 +136,12 @@ class Features:
         time_domain_instance = TimeDomain(subsample=subsample)
 
         features_function = {
-                            # 'Margin_Factor': time_domain_instance.margin_factor, 
-                            # 'Mean_Value': time_domain_instance.mean_value, 
-                            # 'Peak_to_Peak_Amplitude': time_domain_instance.peak_to_peak_amplitude,  
                             'Root_Mean_Square': time_domain_instance.root_mean_square, 
-                            # 'Shape_Factor': time_domain_instance.shape_factor,
-                            # 'Skewness': time_domain_instance.skewness, 
-                            # 'Standard_Error': time_domain_instance.standard_error, 
-                            # 'Std': time_domain_instance.std, 
-                            # 'Variance': time_domain_instance.variance, 
-                            # 'Wavelength': time_domain_instance.wavelength, 
-                            # 'Wilson_Amplitude': time_domain_instance.wilson_amplitude,
-                            # 'Zero_Crossing': time_domain_instance.zero_crossing, 
-                            # 'Average_Mean_from_Envelope': time_domain_instance.average_mean_from_envelope, 
-                            # 'Clearance_Factor': time_domain_instance.clearance_factor,
-                            # 'Crest_Factor': time_domain_instance.crest_factor, 
-                            # 'Entropy': time_domain_instance.entropy, 
-                            # 'Impulse_Factor': time_domain_instance.impulse_factor, 
-                            # 'Kurtosis': time_domain_instance.kurtosis,
-                            # 'Peak_Acceleration': time_domain_instance.peak_acceleration
         }
 
         dict_features_labels = {}
 
-        for channel in self.channels:
+        for channel in ['ch8']:
             print(f'CHANNEL:{channel}')
             dict_features_labels[channel] = {}
             for key, func in features_function.items():

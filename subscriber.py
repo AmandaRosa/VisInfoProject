@@ -1,11 +1,25 @@
 import json
 import paho.mqtt.client as mqtt
+from timedomain import *
+import pickle
+import sklearn
+from streamlit_page import *
 
 class Subscriber:
 
     def __init__(self):
 
-        self.data = []
+        self.data = {
+            'True_Label': [],
+            'MLP': [],
+            'SVM': [],
+            'KNN': [],
+            'RANDOMFOREST': [],
+            'DECISIONTREE': [],
+            'NAIVEBAYES' : []
+        }
+
+        self.app = StreamlitApp()
 
         # Define the broker address
         self.broker_address = "localhost"  # Replace with the actual broker address
@@ -19,15 +33,13 @@ class Subscriber:
 
         mqtt_msg = message.payload.decode()
 
-        true_label = list(json.loads(mqtt_msg).keys())[0]
+        data_dict = json.loads(mqtt_msg)
 
-        print(f"Received number '{true_label}' on topic '{message.topic}'")
+        true_label = list(data_dict.keys())[0]
 
-        self.data.append(true_label)
+        data_array = np.array(data_dict[true_label])   
 
-        ## chamar função que transforma para Dataframe cujas linhas são tempo e colunas são os labels e os valores são 0s e 1s 
-
-        ## chamar aqui o modelo de predicao e resultados comparados aos gabaritos
+        self.predict(true_label, data_array)
 
         return mqtt_msg
 
@@ -50,3 +62,54 @@ class Subscriber:
         self.client.loop_forever()
 
         return self.client.on_message
+    
+    def predict(self, true_label, message):
+
+        legend = {
+            '0': 'Normal',
+            '1': 'Normal',
+            '2': 'Unbalanced_30g',
+            '3': 'Horizontal_Mis_2mm',
+            '4': 'Vertical_Mis_127mm',
+            '5': 'Vertical_127_Hor_2_Mis',
+            '6': 'Unbalanced_30g_Hor_Mis_2mm',
+            '7': 'Unbalanced_30g_Ver_Mis_127mm'
+        }
+
+        classifiers = ['MLP', 'SVM', 'KNN', 'RANDOMFOREST', 'DECISIONTREE', 'NAIVEBAYES']
+
+        with open('./Modelos/MLP.pkl', 'rb') as file:
+            mlp = pickle.load(file)
+
+        with open('./Modelos/SVM.pkl', 'rb') as file:
+            svm = pickle.load(file)
+
+        with open('./Modelos/KNN.pkl', 'rb') as file:
+            knn = pickle.load(file)
+
+        with open('./Modelos/RandomForest.pkl', 'rb') as file:
+            rf = pickle.load(file)
+
+        with open('./Modelos/DecisionTree.pkl', 'rb') as file:
+            dt = pickle.load(file)
+
+        with open('./Modelos/NaiveBayes.pkl', 'rb') as file:
+            nb = pickle.load(file)
+
+        models = [mlp, svm, knn, rf, dt, nb]
+
+        self.data['True_Label'].append(true_label)
+
+        for idx, model in enumerate(models):
+            y_pred = model.predict(message)
+            # print(model, int(y_pred[-1]))
+            self.data[classifiers[idx]].append(legend[str(int(y_pred[-1]))])
+
+        self.app.streamlit_page(self.data)
+
+
+
+
+        
+
+
