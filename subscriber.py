@@ -4,6 +4,8 @@ from timedomain import *
 import pickle
 import sklearn
 import streamlit as st
+from graps import *
+from collections import Counter
 
 class Subscriber:
 
@@ -19,18 +21,49 @@ class Subscriber:
             'NAIVEBAYES' : []
         }
 
-        # Define the broker address
-        self.broker_address = "localhost"  # Replace with the actual broker address
+        self.acc = {}
+        self.data_counter = {
+            'True_Label': [],
+            'MLP': [],
+            'SVM': [],
+            'KNN': [],
+            'RANDOMFOREST': [],
+            'DECISIONTREE': [],
+            'NAIVEBAYES' : []
+        }
 
-        # Define the topics
+        self.data_normal_fault = {
+            'True_Label': [],
+            'MLP': [],
+            'SVM': [],
+            'KNN': [],
+            'RANDOMFOREST': [],
+            'DECISIONTREE': [],
+            'NAIVEBAYES' : []
+        }
+        self.broker_address = "localhost"  
         self.topics = ["test/topic1", "test/topic2", "test/topic3"]
 
-    def calculate_accuracy(self, true_labels, predictions):
-        correct = np.sum(np.array(true_labels) == np.array(predictions))
-        accuracy = correct / len(true_labels) *100 
-        return accuracy
+    def calculate_accuracy(self, data):
+        for idx, key in enumerate(self.data.keys()):
+            correct = np.sum(np.array(self.data['True_Label']) == np.array(self.data[key]))
+            print(self.data)
+            self.acc[key] = f"{correct / len(self.data['True_Label']) * 100:.2f}"
 
-    # Define the callback function for when a message is received
+        for key, value in data.items():
+            label_counts = Counter(value)
+            label_counts_list = [[label, count] for label, count in label_counts.items()]
+            self.data_counter[key] = label_counts_list
+            normal_count = label_counts['Normal']
+            fault_count = sum(count for label, count in label_counts.items() if label != 'Normal')
+
+            self.data_normal_fault[key] = {
+                "Normal": normal_count,
+                "Fault": fault_count
+            }
+
+        return self.acc, self.data_counter, self.data_normal_fault
+
     def on_message(self, client, userdata, message):
 
 
@@ -42,31 +75,28 @@ class Subscriber:
 
         data_array = np.array(data_dict[true_label])
 
-        dict_data = self.predict(true_label, data_array)
+        accuracies, occurrences, data, normal_fault = self.predict(true_label, data_array)
 
-        ## chamar os gráficos e plots que irão printar no streamlit
-    
-        return mqtt_msg
+        print_accuracies(accuracies)
+
+        print_occurrences(occurrences)
+
+        print_data_bruta(data)
+
+        print_normal_fault(normal_fault)
+
+        return st.session_state
 
     def subscriber(self):
 
-        # Create a new MQTT client instance
         self.client = mqtt.Client(client_id="Subscriber")
-
-        # Attach the on_message callback function
         self.client.on_message = self.on_message
-
-        # Connect to the broker
         self.client.connect(self.broker_address)
 
-        # Subscribe to the topics
         for topic in self.topics:
             self.client.subscribe(topic)
 
-        # Start the MQTT client loop
         self.client.loop_forever()
-
-        return self.client.on_message
     
     def predict(self, true_label, message):
 
@@ -109,10 +139,10 @@ class Subscriber:
             y_pred = model.predict(message)
             self.data[classifiers[idx]].append(legend[str(int(y_pred[-1]))])
 
-        acc_mlp = self.calculate_accuracy(self.data['True_Label'], self.data['MLP'])
-        print(acc_mlp)
+        acuracies, occurrences, normal_fault = self.calculate_accuracy(self.data)
 
-        return self.data
+        return acuracies, occurrences, self.data, normal_fault
+
 
 
 
