@@ -14,7 +14,7 @@ def read_data(directory_path, dict_data):
     arrays = [[] for _ in range(0, 9)]
     i=0
     for root, dirs, files in os.walk(directory_path):
-        key = os.path.relpath(root, start="../data_unbalanced_g")
+        key = os.path.relpath(root, start="../../Doc_Project_01/data")
         for file in sorted(files):
             if i==0:
                 i+=1
@@ -61,13 +61,13 @@ class Features:
 
         self.dict_data = {}
 
-        self.dict_data_final = read_data("../data/Normal_1/", self.dict_data)
-        self.dict_data_final = read_data("../data/Unbalance_30_g/", self.dict_data)
-        self.dict_data_final = read_data("../data/Horizontal_Misalignment_2_0mm/", self.dict_data)
-        self.dict_data_final = read_data("../data/Vertical_Misalignment_1.27_mm/", self.dict_data)
-        self.dict_data_final = read_data("../data/Ver. Misalignment_1.27_mm+Hor. Misalignment_2_mm/", self.dict_data)
-        self.dict_data_final = read_data("../data/Unbalance_30_g+Hor. Misalignment_2.0_mm/", self.dict_data)
-        self.dict_data_final = read_data("../data/Unbalance_30_g+Ver. Misalignment_1.27_mm/", self.dict_data)
+        self.dict_data_final = read_data("../../Doc_Project_01/data/Normal_1/", self.dict_data)
+        self.dict_data_final = read_data("../../Doc_Project_01/data/Unbalance_30_g/", self.dict_data)
+        self.dict_data_final = read_data("../../Doc_Project_01/data/Horizontal_Misalignment_2_0mm/", self.dict_data)
+        self.dict_data_final = read_data("../../Doc_Project_01/data/Vertical_Misalignment_1.27_mm/", self.dict_data)
+        self.dict_data_final = read_data("../../Doc_Project_01/data/Ver. Misalignment_1.27_mm+Hor. Misalignment_2_mm/", self.dict_data)
+        self.dict_data_final = read_data("../../Doc_Project_01/data/Unbalance_30_g+Hor. Misalignment_2.0_mm/", self.dict_data)
+        self.dict_data_final = read_data("../../Doc_Project_01/data/Unbalance_30_g+Ver. Misalignment_1.27_mm/", self.dict_data)
 
         self.channels = ['ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8']
         self.normal1_signal = {channel: [] for channel in self.channels}
@@ -80,27 +80,27 @@ class Features:
 
         for i in range(2,9,1):
 
-            for array in self.dict_data_final["../data/Normal_1"]:
+            for array in self.dict_data_final["Normal_1"]:
                 self.normal1_signal[f'ch{i}'].append(array[i-1])  # Assuming column 1 is time_vector
 
-            for array in self.dict_data_final["../data/Unbalance_30_g"]:
+            for array in self.dict_data_final["Unbalance_30_g"]:
                 self.unbalanced30g_signal[f'ch{i}'].append(array[i-1]) # Assuming column 1 is time_vector
 
-            for array in self.dict_data_final["../data/Horizontal_Misalignment_2_0mm"]:
+            for array in self.dict_data_final["Horizontal_Misalignment_2_0mm"]:
                 self.horizontalmisalign_2mm_signal[f'ch{i}'].append(array[i-1]) # Assuming column 1 is time_vector
 
-            for array in self.dict_data_final["../data/Vertical_Misalignment_1.27_mm"]:
+            for array in self.dict_data_final["Vertical_Misalignment_1.27_mm"]:
                 self.verticalmisalign_1_27mm_signal[f'ch{i}'].append(array[i-1]) # Assuming column 1 is time_vector
 
-            for array in self.dict_data_final["../data/Ver. Misalignment_1.27_mm+Hor. Misalignment_2_mm"]:
+            for array in self.dict_data_final["Ver. Misalignment_1.27_mm+Hor. Misalignment_2_mm"]:
                 self.verticalmisalign_1_27mm_horizontalmisaling_2_mm_signal[f'ch{i}'].append(array[i-1]) # Assuming column 1 is time_vector
 
-            for array in self.dict_data_final["../data/Unbalance_30_g+Hor. Misalignment_2.0_mm"]:
+            for array in self.dict_data_final["Unbalance_30_g+Hor. Misalignment_2.0_mm"]:
                 self.Unbalance_30_g_Hor_Misalignment_2_0_mm_signal[f'ch{i}'].append(array[i-1]) # Assuming column 1 is time_vector
 
-            for array in self.dict_data_final["../data/Unbalance_30_g+Ver. Misalignment_1.27_mm"]:
+            for array in self.dict_data_final["Unbalance_30_g+Ver. Misalignment_1.27_mm"]:
                 self.Unbalance_30_g_Ver_Misalignment_1_27_mm_signal[f'ch{i}'].append(array[i-1]) # Assuming column 1 is time_vector
-
+        
         self.noise_values = np.linspace(0.001, 0.2, 5)
 
         self.normal1_signal_list = {channel: [] for channel in self.channels}

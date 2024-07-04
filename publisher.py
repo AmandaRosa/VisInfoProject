@@ -20,7 +20,7 @@ class Publisher:
         self.client = mqtt.Client(client_id="Publisher")
 
         # Connect to the broker
-        self.client.connect(self.broker_address)
+        self.client.connect(self.broker_address, 1883)
 
 
     def publish(self, topic, message):

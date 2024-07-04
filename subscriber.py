@@ -26,17 +26,8 @@ class Subscriber:
         self.topics = ["test/topic1", "test/topic2", "test/topic3"]
 
     def calculate_accuracy(self, true_labels, predictions):
-        # print(true_labels)
-        # correct = 0
-        # for idx, item in enumerate(true_labels):
-        #     result_bool = (true_labels[idx] == predictions[idx])
-        #     if result_bool == True:
-        #         correct +=1
-        #     accuracy = correct / len(true_labels) *100
-        correct = np.sum(true_labels == predictions)
-        print(correct)
+        correct = np.sum(np.array(true_labels) == np.array(predictions))
         accuracy = correct / len(true_labels) *100 
-
         return accuracy
 
     # Define the callback function for when a message is received
@@ -118,7 +109,8 @@ class Subscriber:
             y_pred = model.predict(message)
             self.data[classifiers[idx]].append(legend[str(int(y_pred[-1]))])
 
-        print(self.data)
+        acc_mlp = self.calculate_accuracy(self.data['True_Label'], self.data['MLP'])
+        print(acc_mlp)
 
         return self.data
 
