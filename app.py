@@ -2,8 +2,8 @@ from publisher import *
 from features import *
 
 
-sessao = Features()
 publisher = Publisher()
+sessao = Features()
 
 while True:
     chave, valor = sessao.disparar()

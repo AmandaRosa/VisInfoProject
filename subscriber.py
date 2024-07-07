@@ -4,8 +4,9 @@ from timedomain import *
 import pickle
 import sklearn
 import streamlit as st
-from graps import *
+from graphs import *
 from collections import Counter
+from scipy.stats import mode
 
 class Subscriber:
 
@@ -77,11 +78,11 @@ class Subscriber:
 
         accuracies, occurrences, data, normal_fault = self.predict(true_label, data_array)
 
-        print_accuracies(accuracies)
+        # print_accuracies(accuracies)
 
-        print_occurrences(occurrences)
+        # print_occurrences(occurrences)
 
-        print_data_bruta(data)
+        # print_data_bruta(data)
 
         print_normal_fault(normal_fault)
 
@@ -136,8 +137,10 @@ class Subscriber:
         self.data['True_Label'].append(true_label)
 
         for idx, model in enumerate(models):
-            y_pred = model.predict(message)
-            self.data[classifiers[idx]].append(legend[str(int(y_pred[-1]))])
+            unique_nparray = np.concatenate(message)
+            y_pred = model.predict(unique_nparray.reshape(-1, 1))
+            mode_value, _ = mode(y_pred)
+            self.data[classifiers[idx]].append(legend[str(int(mode_value))])
 
         acuracies, occurrences, normal_fault = self.calculate_accuracy(self.data)
 
