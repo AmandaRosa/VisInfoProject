@@ -84,11 +84,11 @@ class Subscriber:
 
         print_data_bruta(data)
 
-        # print_normal_fault(normal_fault)
+        print_normal_fault(normal_fault)
 
         return st.session_state
 
-    def subscriber(self):
+    def calling_subscriber(self):
 
         self.client = mqtt.Client(client_id="Subscriber")
         self.client.on_message = self.on_message

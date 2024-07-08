@@ -1,4 +1,4 @@
 from subscriber import *
 
 subscriber = Subscriber()
-subscriber.subscriber()
+subscriber.calling_subscriber()

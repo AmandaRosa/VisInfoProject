@@ -111,6 +111,9 @@ def print_occurrences(occurrences):
         fig2.write_html(f'graphs/{key}_distribution_pie_chart.html')
 
 def print_data_bruta(data):
+
+    print('DATA BRUTA:',len(data['True_Label']), 'amostras')
+
     # curves
     fault_types = ['Normal', 'Unbalanced_30g', 'Horizontal_Mis_2mm', 'Vertical_Mis_127mm', 
                'Vertical_127_Hor_2_Mis', 'Unbalanced_30g_Hor_Mis_2mm', 'Unbalanced_30g_Ver_Mis_127mm']
@@ -149,7 +152,7 @@ def print_data_bruta(data):
 
         # Add traces for True_Label
         for fault_idx, fault_type in enumerate(fault_types):
-            fig3.add_trace(go.Scatter(x=list(range(1, 13)), y=dict_fault['True_Label'][fault_type],
+            fig3.add_trace(go.Scatter(x=list(range(1, 100)), y=dict_fault['True_Label'][fault_type],
                                     mode='lines+markers',
                                     name=f"{fault_type}",
                                     line=dict(color=color_labels[fault_type])),
@@ -157,7 +160,7 @@ def print_data_bruta(data):
 
         # Add traces for the current architecture
         for fault_idx, fault_type in enumerate(fault_types):
-            fig3.add_trace(go.Scatter(x=list(range(1, 13)), y=dict_fault[architecture][fault_type],
+            fig3.add_trace(go.Scatter(x=list(range(1, 100)), y=dict_fault[architecture][fault_type],
                                     mode='lines+markers',
                                     line=dict(color=color_labels[fault_type]),
                                     showlegend=False),
@@ -213,8 +216,21 @@ def print_normal_fault(normal_fault):
 
     fp_fn_results = calculate_false_positives_and_negatives(normal_fault)
 
-    # for model, results in fp_fn_results.items():
-    #     print(f"Model: {model}")
-    #     print(f"False Positive: {results['False_Positive']}")
-    #     print(f"False Negative: {results['False_Negative']}")
-    #     print()
+    for model, results in fp_fn_results.items():
+        fig = go.Figure(data=[
+        go.Bar(name='False Positive', x=['False Positive'], y=[results['False_Positive']], marker_color= 'red'),
+        go.Bar(name='False Negative', x=['False Negative'], y=[results['False_Negative']], marker_color='yellow')
+        ])
+
+        fig.update_layout(
+            title=f'{model} - False Positives and False Negatives',
+            xaxis_title='Falsos Alarmes',
+            yaxis_title='Quantidade'
+        )
+
+        # Save the figure as an HTML file
+        fig.write_html(f"graphs/{model}_fp_fn_results.html")
+        # print(f"Model: {model}")
+        # print(f"False Positive: {results['False_Positive']}")
+        # print(f"False Negative: {results['False_Negative']}")
+        # print()

@@ -37,16 +37,8 @@ if botao_input_conexao:
 if botao_input_subscribe:
     st.session_state['analisando']= True
     st.sidebar.success("Analisando...")
-    subprocess.run(["python3", "app2.py"], capture_output=True, text=True)
 
 st.title("Dashboard")
-
-if 'init' not in st.session_state:
-    st.session_state['init'] = True
-    if 'subscriber_instance' not in st.session_state:
-        st.session_state['subscriber_instance'] = Subscriber()
-        st.session_state['conectado'] = False
-        st.session_state['analisando'] = False
 
 col1, col2, col3 = st.columns([2,1,7])
 
@@ -68,64 +60,92 @@ st.write("Selecionado:", st.session_state["option_classifier"])
 
 
 def execution():
-    print('aqui')
 
     if st.session_state["option_classifier"] == "Global":
 
         path = "./graphs/model_accuracies.html"
         path2 = "./graphs/True_Label_distribution_pie_chart.html"
+        path3 = None
 
     elif st.session_state["option_classifier"] == "MLP":
 
         path = "./graphs/true_label_vs_mlp_subplot.html"
         path2 = "./graphs/MLP_distribution_pie_chart.html"
+        path3 = "./graphs/MLP_fp_fn_results.html"
 
     elif st.session_state["option_classifier"] == "SVM":
 
         path = "./graphs/true_label_vs_svm_subplot.html"
         path2 = "./graphs/SVM_distribution_pie_chart.html"
+        path3 = "./graphs/SVM_fp_fn_results.html"
 
     elif st.session_state["option_classifier"] == "DecisionTree":
 
         path = "./graphs/true_label_vs_decisiontree_subplot.html"
         path2 = "./graphs/DECISIONTREE_distribution_pie_chart.html"
+        path3 = "./graphs/DECISIONTREE_fp_fn_results.html"
 
     elif st.session_state["option_classifier"] == "RandomForest":
 
         path = "./graphs/true_label_vs_randomforest_subplot.html"
         path2 = "./graphs/RANDOMFOREST_distribution_pie_chart.html"
+        path3 = "./graphs/RANDOMFOREST_fp_fn_results.html"
 
     elif st.session_state["option_classifier"] == "KNN":
 
         path = "./graphs/true_label_vs_knn_subplot.html"
         path2 = "./graphs/KNN_distribution_pie_chart.html"
+        path3 = "./graphs/KNN_fp_fn_results.html"
 
     elif st.session_state["option_classifier"] == "NaiveBayes":
 
         path = "./graphs/true_label_vs_naivebayes_subplot.html"
         path2 = "./graphs/NAIVEBAYES_distribution_pie_chart.html"
+        path3 = "./graphs/NAIVEBAYES_fp_fn_results.html"
 
     # Divider
     st.write("------")
 
 
-    col1, col2 = st.columns(2)
+    with st.container():
+        try:
 
-    with col1:
+            with open(path, 'r', encoding='utf-8') as file:
+                html_data = file.read()
+            st.components.v1.html(html_data, height=700, width=1750)
 
-        with open(path, 'r', encoding='utf-8') as file:
-            html_data = file.read()
-        st.components.v1.html(html_data, height=5000)
+        except:
+            pass
 
-    with col2:
+    with st.container():
+        try:
 
-        with open(path2, 'r', encoding='utf-8') as file:
-            html_data = file.read()
-        st.components.v1.html(html_data, height=5000)
+            with open(path2, 'r', encoding='utf-8') as file:
+                html_data = file.read()
+            st.components.v1.html(html_data, height=500)
+
+        except:
+            pass
+
+    with st.container():
+        try:
+            with open(path3, 'r', encoding='utf-8') as file:
+                html_data = file.read()
+            st.components.v1.html(html_data, height=500)
+        except:
+            pass
 
 
 if __name__ == "__main__":
 
+    if 'init' not in st.session_state:
+        print('iniciou')
+        st.session_state['init'] = True
+        st.session_state['conectado'] = False
+        st.session_state['analisando'] = False
+
     while True:
-        time.sleep(15)
         execution()
+        time.sleep(10)
+
+

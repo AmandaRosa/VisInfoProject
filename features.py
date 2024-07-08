@@ -249,7 +249,7 @@ class Features:
             chaves = list(dict_disparo.keys())
             
             # Definindo as probabilidades, com 80% para 'Normal'
-            probabilidades = [0.2 if chave == 'Normal' else 0.8 / (len(chaves) - 1) for chave in chaves]
+            probabilidades = [0.5 if chave == 'Normal' else 0.5 / (len(chaves) - 1) for chave in chaves]
             
             # Escolhendo uma chave aleatoriamente com base nas probabilidades
             chave_escolhida = random.choices(chaves, weights=probabilidades, k=1)[0]
