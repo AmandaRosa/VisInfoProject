@@ -17,19 +17,25 @@ st.set_page_config(
 
 st.sidebar.title("Bearing Fault Diagnosis Monitoring - Simulation")
 
-if "option_classifier" not in st.session_state:
-    st.session_state["option_classifier"] = "MLP"
-
 col1, col2, col3 = st.sidebar.columns(3)
 
 with col1:
     input_conexao = st.sidebar.text_input("Broker Address:")
+    option_channel= st.sidebar.selectbox(
+            "Qual canal gostaria de visualizar?",
+            ("Canal 2", "Canal 3", "Canal 4", "Canal 5", "Canal 6", "Canal 7", "Canal 8"), index=6)
 with col2:
     botao_input_conexao = st.sidebar.button("Conectar")
 with col3:
     botao_input_subscribe = st.sidebar.button("Analisar")
 if botao_input_conexao:
+    st.session_state['conectado']= True
     st.sidebar.success("Conectado!")
+
+if botao_input_subscribe:
+    st.session_state['analisando']= True
+    st.sidebar.success("Analisando...")
+    st.session_state['subscriber_instance'].subscriber()
 
 if __name__ == "__main__":
     st.title("Dashboard")
@@ -38,13 +44,17 @@ if __name__ == "__main__":
         st.session_state['init'] = True
         if 'subscriber_instance' not in st.session_state:
             st.session_state['subscriber_instance'] = Subscriber()
+            st.session_state['conectado'] = False
+            st.session_state['analisando'] = False
 
     col1, col2, col3 = st.columns([2,1,7])
 
     with col1:
+        if "option_classifier" not in st.session_state:
+            st.session_state["option_classifier"] = "Global"
         option_classifier = st.selectbox(
-            "Qual classificador gostaria de visualizar?",
-            ("MLP", "SVM", "DecisionTree", "RandomForest", "KNN", "NaiveBayes"), index=0)
+            "Qual página gostaria de visualizar?",
+            ("Global", "MLP", "SVM", "DecisionTree", "RandomForest", "KNN", "NaiveBayes"), index=0)
     with col2:
         st.write(" ")
         st.write(" ")
@@ -52,49 +62,100 @@ if __name__ == "__main__":
 
     if aplicar_opcao_classificador == True:
         st.session_state["option_classifier"] = option_classifier
+    
     st.write("Selecionado:", st.session_state["option_classifier"])
 
+    # Divider
     st.write("------")
 
-    col1, col2 = st.columns([3,2])
+    if st.session_state['conectado'] == True and st.session_state['analisando'] ==True:
 
-    with col1:
+        col1, col2 = st.columns(2)
 
-        st.write("Grafico de curvas")
+        with col1:
 
-        # fig, ax = plt.subplots()
-        # ax.plot(time, fault1, label='Fault Type 1')
-        # ax.plot(time, fault2, label='Fault Type 2')
-        # ax.plot(time, fault3, label='Fault Type 3')
-        # ax.set_xlabel("Time")
-        # ax.set_ylabel("True/False")
-        # ax.legend()
-        # st.pyplot(fig)
+            if st.session_state["option_classifier"] == "Global":
 
-    with col2:
+                st.write("Gráfico de barras")
 
-        st.write("Gráfico de pizza")
-        # labels = 'Fault Type 1', 'Fault Type 2', 'Fault Type 3'
-        # sizes = [fault1.sum(), fault2.sum(), fault3.sum()]
-        # fig1, ax1 = plt.subplots()
-        # ax1.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-        # ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-        # st.pyplot(fig1)
+                with open("./graphs/model_accuracies.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
 
-    st.write("gráfico de barras")
-    # st.subheader("Fault Counts")
-    # fig2, ax2 = plt.subplots()
-    # bar_width = 0.35
-    # index = np.arange(len(labels))
-    # ax2.bar(index, sizes, bar_width, label='Fault Counts')
-    # ax2.set_xlabel('Fault Type')
-    # ax2.set_ylabel('Counts')
-    # ax2.set_title('Counts by Fault Type')
-    # ax2.set_xticks(index)
-    # ax2.set_xticklabels(labels)
-    # ax2.legend()
-    # st.pyplot(fig2)
+            elif st.session_state["option_classifier"] == "MLP":
+
+                with open("./graphs/true_label_vs_mlp_subplot.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "SVM":
+
+                with open("./graphs/true_label_vs_svm_subplot.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "DecisionTree":
+
+                with open("./graphs/true_label_vs_decisiontree_subplot.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "RandomForest":
+
+                with open("./graphs/true_label_vs_randomforest_subplot.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "KNN":
+
+                with open("./graphs/true_label_vs_knn_subplot.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "NaiveBayes":
+
+                with open("./graphs/true_label_vs_naivebayes_subplot.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+        with col2:
     
-    while True:
-        pass
-        # st.session_state['subscriber_instance'].subscriber()
+            if st.session_state["option_classifier"] == "Global":
+
+                st.write("GLobal")
+
+            elif st.session_state["option_classifier"] == "MLP":
+
+                with open("./graphs/MLP_distribution_pie_chart.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "SVM":
+
+                with open("./graphs/SVM_distribution_pie_chart.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "DecisionTree":
+
+                with open("./graphs/DECISIONTREE_distribution_pie_chart.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "RandomForest":
+
+                with open("./graphs/RANDOMFOREST_distribution_pie_chart.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "KNN":
+
+                with open("./graphs/KNN_distribution_pie_chart.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)
+
+            elif st.session_state["option_classifier"] == "NaiveBayes":
+
+                with open("./graphs/NAIVEBAYES_distribution_pie_chart.html", 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=5000)

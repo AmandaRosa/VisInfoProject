@@ -12,7 +12,7 @@ import seaborn as sns
 def print_accuracies(accuracies):
     # apresentar acuracia como rotulo
     # apresentar em gráfico de barras em comparacao entre as arquiteturas
-    print('acc',accuracies)
+    # print('acc',accuracies)
     models = list(accuracies.keys())
     accuracies_list = [float(value) for value in accuracies.values()]
 
@@ -31,12 +31,15 @@ def print_accuracies(accuracies):
     colors_list = [colors[model] for model in models]
 
     for model, accuracy, color in zip(models, accuracies_list, colors_list):
-        fig.add_trace(go.Bar(
-            x=[model], 
-            y=[accuracy], 
-            marker_color=color, 
-            name=model
-        ))
+        if model== "True_Label":
+            pass
+        else:
+            fig.add_trace(go.Bar(
+                x=[model], 
+                y=[accuracy], 
+                marker_color=color, 
+                name=model
+            ))
 
     # Updating layout for better visualization
     fig.update_layout(
@@ -50,7 +53,7 @@ def print_accuracies(accuracies):
 
 def print_occurrences(occurrences):
     # pizza
-    print('OCCURRENCES:', occurrences)
+    # print('OCCURRENCES:', occurrences)
 
     color_labels = {
         'Vertical_127_Hor_2_Mis': '#66c2a5',
@@ -91,9 +94,9 @@ def print_occurrences(occurrences):
 
     # Accessing individual DataFrames for each key
     for key, df in dfs.items():
-        print(f"DataFrame for {key}:")
-        print(df)
-        print()
+        # print(f"DataFrame for {key}:")
+        # print(df)
+        # print()
 
         fig2 = px.pie(df, values='occurrence', names='fault', color='fault', color_discrete_map=color_labels,
                 title=f'{key} Distribution', 
@@ -171,7 +174,7 @@ def print_data_bruta(data):
         # Save as HTML
         html_filename = f"graphs/true_label_vs_{architecture.lower()}_subplot.html"
         pyo.plot(fig3, filename=html_filename, auto_open=False)
-    print('DATA BRUTA:', dict_fault)
+    # print('DATA BRUTA:', dict_fault)
 
 def calculate_false_positives_and_negatives(normal_fault):
     """
@@ -210,8 +213,8 @@ def print_normal_fault(normal_fault):
 
     fp_fn_results = calculate_false_positives_and_negatives(normal_fault)
 
-    for model, results in fp_fn_results.items():
-        print(f"Model: {model}")
-        print(f"False Positive: {results['False_Positive']}")
-        print(f"False Negative: {results['False_Negative']}")
-        print()
+    # for model, results in fp_fn_results.items():
+    #     print(f"Model: {model}")
+    #     print(f"False Positive: {results['False_Positive']}")
+    #     print(f"False Negative: {results['False_Negative']}")
+    #     print()

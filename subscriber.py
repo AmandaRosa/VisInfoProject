@@ -48,7 +48,7 @@ class Subscriber:
     def calculate_accuracy(self, data):
         for idx, key in enumerate(self.data.keys()):
             correct = np.sum(np.array(self.data['True_Label']) == np.array(self.data[key]))
-            print(self.data)
+            # print(self.data)
             self.acc[key] = f"{correct / len(self.data['True_Label']) * 100:.2f}"
 
         for key, value in data.items():
@@ -78,13 +78,13 @@ class Subscriber:
 
         accuracies, occurrences, data, normal_fault = self.predict(true_label, data_array)
 
-        # print_accuracies(accuracies)
+        print_accuracies(accuracies)
 
-        # print_occurrences(occurrences)
+        print_occurrences(occurrences)
 
-        # print_data_bruta(data)
+        print_data_bruta(data)
 
-        print_normal_fault(normal_fault)
+        # print_normal_fault(normal_fault)
 
         return st.session_state
 
