@@ -138,7 +138,7 @@ class Subscriber:
 
         for idx, model in enumerate(models):
             unique_nparray = np.concatenate(message)
-            y_pred = model.predict(unique_nparray.reshape(-1, 1))
+            y_pred = model.predict(unique_nparray.reshape(-1,1))
             mode_value, _ = mode(y_pred)
             self.data[classifiers[idx]].append(legend[str(int(mode_value))])
 
