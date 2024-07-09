@@ -40,7 +40,7 @@ if botao_input_subscribe:
 
 st.title("Dashboard")
 
-col1, col2, col3 = st.columns([2,1,7])
+col1, col2, col3, col4 = st.columns([2,1,2,7])
 
 with col1:
     if "option_classifier" not in st.session_state:
@@ -52,6 +52,10 @@ with col2:
     st.write(" ")
     st.write(" ")
     aplicar_opcao_classificador = st.button("Selecionar")
+with col3:
+    option_feature = st.selectbox(
+        "Qual a característica gostaria de visualizar?",
+        ("Root Mean Square", "Peak to Peak Amplitude", "Wilson Amplitude", "Slope Sign Change", "Envelope Mean", "Standard Deviation", "Shape Factor"), index=0, key="selection_feature")
 
 if aplicar_opcao_classificador == True:
     st.session_state["option_classifier"] = option_classifier
@@ -106,26 +110,54 @@ def execution():
     # Divider
     st.write("------")
 
+    col1, col2, col3 = st.columns([0.25,10,0.25])
 
-    with st.container():
-        try:
+    with col2:
+        with st.container():
+            st.empty()
+            try:
 
-            with open(path, 'r', encoding='utf-8') as file:
-                html_data = file.read()
-            st.components.v1.html(html_data, height=700, width=1750)
+                with open(path, 'r', encoding='utf-8') as file:
+                    html_data = file.read()
+                st.components.v1.html(html_data, height=700, width=1750)
 
-        except:
-            pass
+            except:
+                pass
 
-    with st.container():
-        try:
+    if path3 != None:
+        col1, col2 = st.columns(2)
 
-            with open(path2, 'r', encoding='utf-8') as file:
-                html_data = file.read()
-            st.components.v1.html(html_data, height=500)
+        with col1:
+            with st.container():
+                try:
 
-        except:
-            pass
+                    with open(path2, 'r', encoding='utf-8') as file:
+                        html_data = file.read()
+                    st.components.v1.html(html_data, height=500)
+
+                except:
+                    pass
+        with col2:
+             with st.container():
+                try:
+
+                    with open("./graphs/True_Label_distribution_pie_chart.html", 'r', encoding='utf-8') as file:
+                        html_data = file.read()
+                    st.components.v1.html(html_data, height=500)
+
+                except:
+                    pass
+    else:
+        with st.container():
+                try:
+
+                    with open(path2, 'r', encoding='utf-8') as file:
+                        html_data = file.read()
+                    st.components.v1.html(html_data, height=500)
+
+                except:
+                    pass 
+
 
     with st.container():
         try:
